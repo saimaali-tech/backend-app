@@ -1,0 +1,41 @@
+name: Deploy Backend to EC2 with PM2
+
+on:
+  push:
+    branches:
+      - main  # or your deployment branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          echo "Starting deployment..."
+
+          # Navigate to your app directory
+             cicd
+          cd /var/www/html/Backend
+
+
+          # Pull latest code from your repository
+          git pull origin main
+
+          # Install dependencies if needed
+          # npm install / yarn install, etc.
+          
+          # Restart your PM2 process
+          pm2 restart your-app-name
+
+          echo "Deployment completed."
+        EOF
