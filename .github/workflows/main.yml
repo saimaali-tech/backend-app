@@ -3,7 +3,7 @@ name: Deploy Backend to EC2 with PM2
 on:
   push:
     branches:
-      - main  # or your deployment branch
+      - main
 
 jobs:
   deploy:
@@ -20,15 +20,10 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          # Navigate to your app directory
-          cd /var/www/html/Backend
-
-          # Pull latest code from your repository
-          git pull origin main
-
-          # Install dependencies if needed
-          npm install 
-          
-          # Restart your PM2 process
-          pm2 restart Backend
-
+          ssh -o StrictHostKeyChecking=no ubuntu@16.170.212.25 << 'EOF'
+            # Commands to run on EC2
+            cd /var/www/html/Backend
+            git pull origin main
+            npm install
+            pm2 restart Backend
+          EOF
