@@ -24,6 +24,7 @@ jobs:
           echo "Starting deployment..."
 
           # Navigate to your app directory
+             cicd
           cd /var/www/html/Backend
 
 
