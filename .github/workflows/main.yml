@@ -10,23 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Set up SSH agent
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
+      - name: Set up SSH agent
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Deploy to EC2
-      run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ubuntu@172.31.47.147 << 'EOF'
-          echo "Starting deployment..."
-
+      - name: Deploy to EC2
+        run: |
           # Navigate to your app directory
-             cicd
           cd /var/www/html/Backend
-
 
           # Pull latest code from your repository
           git pull origin main
@@ -35,7 +30,5 @@ jobs:
           # npm install / yarn install, etc.
           
           # Restart your PM2 process
-          pm2 restart your-app-name
+          pm2 restart Backend
 
-          echo "Deployment completed."
-        EOF
