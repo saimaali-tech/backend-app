@@ -1,43 +1,39 @@
-name: Deploy to EC2
+name: Deploy Backend to EC2 with PM2
 
 on:
-  workflow_dispatch:  # Manual trigger from GitHub
+  push:
+    branches:
+      - main  # or your deployment branch
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Node.js
-      uses: actions/setup-node@v3
+    - name: Set up SSH agent
+      uses: webfactory/ssh-agent@v0.5.3
       with:
-        node-version: '18'
+        ssh-private-key: ${{ secrets.EC2_SSH_KEY }}
 
-    - name: Install dependencies
-      run: npm install
+    - name: Deploy to EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+          echo "Starting deployment..."
 
-    # - name: Build project
-    #   run: npm run build
+          # Navigate to your app directory
+          cd /path/to/your/app
 
-    - name: Copy files to EC2
-      uses: appleboy/scp-action@v0.1.7
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_KEY }}
-        source: "dist/*,package.json,ecosystem.config.js"
-        target: ${{ secrets.EC2_APP_DIR }}
+          # Pull latest code from your repository
+          git pull origin main
 
-    - name: SSH into EC2 and restart PM2
-      uses: appleboy/ssh-action@v1.0.3
-      with:
-        host: ${{ secrets.EC2_HOST }}
-        username: ${{ secrets.EC2_USER }}
-        key: ${{ secrets.EC2_KEY }}
-        script: |
-         
-          npm install --omit=dev
-          pm2 restart Backend
+          # Install dependencies if needed
+          # npm install / yarn install, etc.
+          
+          # Restart your PM2 process
+          pm2 restart your-app-name
+
+          echo "Deployment completed."
+        EOF
