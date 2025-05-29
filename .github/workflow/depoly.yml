@@ -1,0 +1,43 @@
+name: Deploy to EC2
+
+on:
+  workflow_dispatch:  # Manual trigger from GitHub
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm install
+
+    # - name: Build project
+    #   run: npm run build
+
+    - name: Copy files to EC2
+      uses: appleboy/scp-action@v0.1.7
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_KEY }}
+        source: "dist/*,package.json,ecosystem.config.js"
+        # target: ${{ secrets.EC2_APP_DIR }}
+
+    - name: SSH into EC2 and restart PM2
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.EC2_KEY }}
+        script: |
+         
+          npm install --omit=dev
+          pm2 restart Backend
