@@ -24,7 +24,7 @@ jobs:
           echo "Starting deployment..."
 
           # Navigate to your app directory
-          cd /var/www/html/Backend
+          cd /path/to/your/app
 
 
           # Pull latest code from your repository
