@@ -20,7 +20,7 @@ jobs:
 
     - name: Deploy to EC2
       run: |
-        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ubuntu@172.31.47.147 << 'EOF'
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 ubuntu@172.31.47.147 << 'EOF'
           echo "Starting deployment..."
 
           # Navigate to your app directory
