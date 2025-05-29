@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    /* Language and Environment */
+    "target": "es2016",                   // JavaScript target
+    "module": "commonjs",                 // Use CommonJS for Node.js
+    "rootDir": "./src",                   // Source code lives here
+    "outDir": "./dist",                   // Compiled code goes here
+    "esModuleInterop": true,              // Enables default imports for CommonJS
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,                       // Enables all strict type checks
+    "skipLibCheck": true                  // Skips checking library .d.ts files
+  },
+  "include": ["src/**/*"],                // Only compile files in src
+  "exclude": ["node_modules", "dist"]     // Ignore these during compilation
+}
